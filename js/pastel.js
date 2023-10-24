@@ -10,3 +10,4 @@ const colors = [
 ];
 
 document.body.style.backgroundColor = rand(colors);
+document.body.style.transition = 'background-color 1s ease';

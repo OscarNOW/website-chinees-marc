@@ -1,18 +1,20 @@
 import { getAverageColor } from './getAverageColor.js';
+const wait = ms => new Promise(res => setTimeout(res, ms));
+let originalBackgroundColor = null;
 
 const images = [...document.querySelectorAll('img')]
     .filter(image => !image.classList.contains('no-zoom'));
 
 const originalTitle = document.title;
 let closeImage = () => { };
-const openImageFromIndex = index => {
+const openImageFromIndex = (index, preventOpenAnimations, preventClosingAnimations) => {
     if (index === null)
-        closeImage(true);
+        closeImage(true, preventClosingAnimations);
     else {
         const image = images[index];
         if (!image) throw new Error(`Image with index ${index} not found`);
-        closeImage(true);
-        handleImageClick(image, index, true);
+        closeImage(true, preventClosingAnimations);
+        handleImageClick(image, index, true, preventOpenAnimations);
     }
 };
 
@@ -34,7 +36,7 @@ if (urlParams.get('image'))
     try {
         const index = parseInt(urlParams.get('image'));
 
-        openImageFromIndex(index);
+        openImageFromIndex(index, true);
         history.replaceState(index, '', `?image=${index}`);
     } catch (error) {
         console.error(error)
@@ -42,7 +44,7 @@ if (urlParams.get('image'))
     }
 
 window.addEventListener('popstate', e => {
-    openImageFromIndex(e.state);
+    openImageFromIndex(e.state, true, true);
     updateTitle(e.state);
 });
 
@@ -66,7 +68,7 @@ function insertAfter(newNode, existingNode) {
     existingNode.parentNode.insertBefore(newNode, existingNode.nextSibling);
 }
 
-function handleImageClick(image, index, preventHistory) {
+async function handleImageClick(image, index, preventHistory, preventOpenAnimations) {
     const overlay = document.createElement('div');
 
     overlay.style.position = 'fixed';
@@ -76,9 +78,12 @@ function handleImageClick(image, index, preventHistory) {
     overlay.style.width = '100dvw';
     overlay.style.height = '100dvh';
 
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0)';
     overlay.style.backdropFilter = 'blur(5px)';
     overlay.style.zIndex = 1;
+
+    if (!preventOpenAnimations)
+        overlay.style.transition = 'all 1s ease';
 
     const dialog = document.createElement('dialog');
     dialog.classList.add('zoomable-image-dialog');
@@ -89,6 +94,7 @@ function handleImageClick(image, index, preventHistory) {
 
     dialog.style.padding = '0';
     dialog.style.border = 'none';
+    dialog.style.outline = 'none';
     dialog.style.maxWidth = '70vw';
     dialog.style.maxHeight = '70vw';
     dialog.style.borderRadius = '10px';
@@ -97,13 +103,29 @@ function handleImageClick(image, index, preventHistory) {
     dialog.style.cursor = 'zoom-out';
     dialog.style.boxShadow = '0px 0px 140px 28px rgba(0,0,0,0.5)';
 
-    closeImage = preventHistory => {
+    closeImage = async (preventHistory, preventClosingAnimations) => {
         for (const navbar of [...document.querySelectorAll('.navbar')]) {
             navbar.parentElement.removeChild(navbar);
             document.body.appendChild(navbar);
 
             navbar.style.cursor = null;
         };
+
+        let oldBodyTransition = document.body.style.transition;
+        if (preventClosingAnimations) document.body.style.transition = null;
+        document.body.style.backgroundColor = originalBackgroundColor;
+
+        await wait(50);
+        if (preventClosingAnimations) document.body.style.transition = oldBodyTransition;
+
+        if (!preventClosingAnimations) {
+            dialog.style.transition = 'opacity 0.5s ease';
+            overlay.style.transition = 'opacity 1s ease';
+        }
+
+        dialog.style.opacity = '0';
+        overlay.style.opacity = '0';
+        await wait(1000);
 
         dialog.close();
         dialog.parentNode.removeChild(dialog);
@@ -121,9 +143,12 @@ function handleImageClick(image, index, preventHistory) {
 
     dialog.addEventListener('click', function (e) {
         if (e.target === this)
-            closeImage()
+            closeImage(false)
     });
-    dialog.addEventListener('close', () => closeImage());
+    dialog.addEventListener('close', () => closeImage(false));
+    document.body.appendChild(dialog);
+    document.body.style.overflow = 'hidden';
+    document.body.appendChild(overlay);
 
     const closeButton = document.createElement('button');
     /*
@@ -149,8 +174,12 @@ function handleImageClick(image, index, preventHistory) {
     closeButton.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
     closeButton.style.borderBottomLeftRadius = '10px';
     closeButton.style.backdropFilter = 'blur(5px)';
+    closeButton.style.border = 'none';
 
     closeButton.addEventListener('click', () => closeImage());
+    closeButton.style.opacity = '0';
+    if (!preventOpenAnimations)
+        closeButton.style.transition = 'opacity 0.5s ease';
 
     const closeIcon = document.createElement('span');
     closeIcon.innerText = '✕';
@@ -163,27 +192,50 @@ function handleImageClick(image, index, preventHistory) {
 
     closeButton.appendChild(closeIcon);
 
+    const oldImagePosition = image.getBoundingClientRect();
+
+    const newImageStyles = {
+        cursor: 'zoom-out',
+        display: 'block',
+        maxWidth: '90vw',
+        maxHeight: '90vh',
+        width: 'auto',
+        height: 'auto'
+    };
+
     const imageClone = image.cloneNode();
-    insertAfter(imageClone, image);
+    const imageClonePosition = document.createElement('span');
+    insertAfter(imageClonePosition, image);
     image.parentNode.removeChild(image);
+    dialog.appendChild(image);
 
     image.className = '';
     image.removeAttribute('style');
     for (const dataKey in image.dataset)
         delete image.dataset[dataKey];
 
-    image.style.cursor = 'zoom-out';
-    image.style.display = 'block';
+    for (const [key, value] of Object.entries(newImageStyles))
+        image.style[key] = value;
 
-    image.style.maxWidth = '90vw';
-    image.style.maxHeight = '90vh';
+    dialog.style.opacity = '0';
+    dialog.showModal();
+    const newImagePosition = image.getBoundingClientRect();
 
-    image.style.width = 'auto';
-    image.style.height = 'auto';
+    image.removeAttribute('style');
+
+    image.style.position = 'fixed';
+    image.style.left = `${oldImagePosition.left}px`;
+    image.style.top = `${oldImagePosition.top}px`;
+    image.style.width = `${oldImagePosition.width}px`;
+    image.style.height = `${oldImagePosition.height}px`;
+
+    if (!preventOpenAnimations)
+        image.style.transition = 'all 1s ease';
+
+    dialog.style.opacity = null;
 
     image.addEventListener('click', () => closeImage());
 
-    dialog.appendChild(image);
     dialog.appendChild(closeButton);
 
     for (const navbar of [...document.querySelectorAll('.navbar')]) {
@@ -204,17 +256,51 @@ function handleImageClick(image, index, preventHistory) {
     else
         updateHistory(index);
 
-    document.body.style.overflow = 'hidden';
-    document.body.appendChild(dialog);
-    document.body.appendChild(overlay);
-    dialog.showModal();
+    await wait(0);
 
+    let averageColor;
     try {
-        const averageColor = getAverageColor(image);
-        overlay.style.backgroundColor = `rgba(${averageColor.r},${averageColor.g},${averageColor.b},0.7)`;
+        averageColor = getAverageColor(image);
     } catch (e) {
         console.error(e)
     }
+
+    let oldBodyTransition = document.body.style.transition;
+    if (preventOpenAnimations) document.body.style.transition = null;
+    if (averageColor)
+        overlay.style.backgroundColor = `rgba(${averageColor.r},${averageColor.g},${averageColor.b},0.7)`;
+    else
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.4)';
+    if (preventOpenAnimations) document.body.style.transition = oldBodyTransition;
+
+    if (originalBackgroundColor === null)
+        originalBackgroundColor = document.body.style.backgroundColor;
+    document.body.style.backgroundColor = null;
+
+    image.style.position = 'fixed';
+    image.style.left = `${newImagePosition.left}px`;
+    image.style.top = `${newImagePosition.top}px`;
+    image.style.width = `${newImagePosition.width}px`;
+    image.style.height = `${newImagePosition.height}px`;
+    image.style.boxShadow = dialog.style.boxShadow;
+    image.style.borderRadius = dialog.style.borderRadius;
+
+    await wait(1000);
+
+    image.removeAttribute('style');
+    for (const [key, value] of Object.entries(newImageStyles))
+        image.style[key] = value;
+
+    closeButton.style.opacity = null;
+
+    imageClone.style.opacity = '0';
+    insertAfter(imageClone, imageClonePosition);
+    imageClonePosition.remove();
+
+    await wait(500);
+
+    imageClone.style.transition = 'opacity 3s ease';
+    imageClone.style.opacity = '1';
 }
 
 
