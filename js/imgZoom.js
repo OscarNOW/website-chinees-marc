@@ -7,14 +7,16 @@ const images = [...document.querySelectorAll('img')]
 
 const originalTitle = document.title;
 let closeImage = () => { };
-const openImageFromIndex = (index, preventOpenAnimations, preventClosingAnimations) => {
+const openImageFromIndex = async (index, preventOpenAnimations, preventClosingAnimations) => {
     if (index === null)
-        closeImage(true, preventClosingAnimations);
+        await closeImage(true, preventClosingAnimations);
     else {
         const image = images[index];
         if (!image) throw new Error(`Image with index ${index} not found`);
-        closeImage(true, preventClosingAnimations);
-        handleImageClick(image, index, true, preventOpenAnimations);
+
+        await closeImage(true, preventClosingAnimations);
+        await wait(500);
+        await handleImageClick(image, index, true, preventOpenAnimations);
     }
 };
 
