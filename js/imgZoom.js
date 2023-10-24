@@ -210,6 +210,7 @@ async function handleImageClick(image, index, preventHistory, preventOpenAnimati
     const imageCloneDocumentPosition = document.createElement('span');
     imageCloneDocumentPosition.style.width = `${oldImagePosition.width}px`;
     imageCloneDocumentPosition.style.height = `${oldImagePosition.height}px`;
+    imageCloneDocumentPosition.style.display = 'block';
     insertAfter(imageCloneDocumentPosition, image);
 
     const imageClone = image.cloneNode();
