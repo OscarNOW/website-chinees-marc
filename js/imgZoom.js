@@ -115,6 +115,17 @@ async function handleImageClick(image, index, preventHistory, preventOpenAnimati
         if (preventClosingAnimations) document.body.style.transition = null;
         document.body.style.backgroundColor = originalBackgroundColor;
 
+        dialog.style.pointerEvents = 'none';
+        overlay.style.pointerEvents = 'none';
+        document.body.style.overflow = null;
+
+        closeImage = () => { };
+
+        if (preventHistory)
+            updateTitle(index);
+        else
+            updateHistory(null);
+
         await wait(50);
         if (preventClosingAnimations) document.body.style.transition = oldBodyTransition;
 
@@ -128,17 +139,8 @@ async function handleImageClick(image, index, preventHistory, preventOpenAnimati
         await wait(1000);
 
         dialog.close();
-        dialog.parentNode.removeChild(dialog);
-
-        overlay.parentNode.removeChild(overlay);
-        document.body.style.overflow = null;
-
-        closeImage = () => { };
-
-        if (preventHistory)
-            updateTitle(index);
-        else
-            updateHistory(null);
+        dialog.remove();
+        overlay.remove();
     };
 
     dialog.addEventListener('click', function (e) {
@@ -267,9 +269,10 @@ async function handleImageClick(image, index, preventHistory, preventOpenAnimati
 
     let oldBodyTransition = document.body.style.transition;
     if (preventOpenAnimations) document.body.style.transition = null;
-    if (averageColor)
+    if (averageColor) {
         overlay.style.backgroundColor = `rgba(${averageColor.r},${averageColor.g},${averageColor.b},0.7)`;
-    else
+        dialog.style.backgroundColor = `rgb(${averageColor.r},${averageColor.g},${averageColor.b})`;
+    } else
         overlay.style.backgroundColor = 'rgba(0,0,0,0.4)';
     if (preventOpenAnimations) document.body.style.transition = oldBodyTransition;
 
