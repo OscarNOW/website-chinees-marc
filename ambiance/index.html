@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Oscar Knap, Elize Aalders, Timo de Vroome (A3A 2023)">
+    <title>Ambiance - foto's</title>
+
+    <script type="module" src="/js/pastel.js"></script>
+    <script type="module" src="/js/imgZoom.js"></script>
+    <link href="/css/index.css" rel="stylesheet">
+
+    <script type="module" src="/modifier/overlay.js"></script>
+
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="/">
+            ← Terug naar home
+        </a>
+        <p>
+            © Copyright foto's Marc
+        </p>
+    </div>
+
+    <main class="row">
+        <div class="column s25 gap">
+            <img src="/marc/ambiance/2.jpg">
+            <img src="/marc/ambiance/3.jpg">
+            <img src="/marc/ambiance/4.jpg">
+        </div>
+        <div class="column s50 gap">
+            <img src="/marc/ambiance/1.jpg" class="modifier_overlay" data-overlay="/img/pagode_dak.png"
+                data-overlay-y="-80px" data-img-scale="0.85" data-img-y="var(--bottom-same)">
+            <div class="row" style="width: 100%">
+                <img src="/marc/ambiance/_1.jpg" style="width: 48%">
+                <img src="/marc/ambiance/_2.jpg" style="width: 48%">
+            </div>
+        </div>
+        <div class="column s25 gap">
+            <img src="/marc/ambiance/5.jpg">
+            <img src="/marc/ambiance/6.jpg">
+            <img src="/marc/ambiance/7.jpg">
+        </div>
+    </main>
+</body>
+
+</html>

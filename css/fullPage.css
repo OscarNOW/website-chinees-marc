@@ -1,0 +1,31 @@
+body {
+    margin: 0;
+
+    min-height: 100vh;
+    width: 100vw;
+
+    overflow-x: hidden;
+
+    display: flex;
+    justify-content: space-around;
+}
+
+body:has(.navbar) {
+    padding-top: 3vh;
+}
+
+main {
+    width: 90vw;
+    height: fit-content;
+
+    display: flex;
+    justify-content: space-around;
+
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+}
+
+/* if main has full-width image, we make main smaller */
+main:has(>img:not(.s50):not(.s33):not(.s25)) {
+    width: 80vw;
+}

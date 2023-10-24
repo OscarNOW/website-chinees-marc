@@ -1,0 +1,5 @@
+.modifier_vegetarisch::after {
+    content: ' (vegetarisch)';
+    font-weight: bold;
+    color: green;
+}

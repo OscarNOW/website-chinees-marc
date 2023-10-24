@@ -1,0 +1,11 @@
+-home (Oscar)
+menu kaarten toegevoegd (Oscar)
+-olieblik (Elize)
+    Eerst hoedjes, Marc vond niet goed, nu waaiers
+-Marc vond het leuker als er een soort "lijst" over plaatjes was dan bijvoorbeeld hoedjes, dus dat hebben we toegepast (Elize)
+-Navigatie bar (Timo)
+    Copyright fotos Marc
+    Terug naar home
+-Plaatje inzomen (Timo)
+    Als je op een plaatje klikt, wordt het plaatje groot
+    Achtergrond kleur is hetzelfde kleur als het plaatje

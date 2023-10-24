@@ -1,0 +1,15 @@
+    /
+    /welcome
+    /stickers
+    /promo
+    /olieblik
+    /ambiance
+    /review
+    /kauwgomballenautomaat
+    /afhaal
+    /authentiek (redirect page)
+    /authentiek/leeuw
+    /authentiek/pagode
+    /authentiek/uithandborden
+    /gesloten
+    /menu

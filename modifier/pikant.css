@@ -1,0 +1,5 @@
+.modifier_pikant::after {
+    content: ' (pikant)';
+    font-weight: bold;
+    color: red;
+}

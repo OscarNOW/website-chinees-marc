@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Oscar Knap, Elize Aalders, Timo de Vroome (A3A 2023)">
+    <title>Olieblik - foto's</title>
+
+    <script type="module" src="/js/pastel.js"></script>
+    <script type="module" src="/js/imgZoom.js"></script>
+    <link href="/css/index.css" rel="stylesheet">
+
+    <script type="module" src="/modifier/overlay.js"></script>
+
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="/">
+            ← Terug naar home
+        </a>
+        <p>
+            © Copyright foto's Marc
+        </p>
+    </div>
+
+    <main class="row">
+        <div class="column s25 gap">
+            <img src="/marc/olieblik/1.jpg">
+            <img src="/marc/olieblik/2.jpg">
+        </div>
+        <div class="column s50 gap">
+            <img src="/marc/olieblik/_.jpg" class="modifier_overlay" data-overlay="/img/waaiers.png"
+                data-overlay-scale="1.13" data-overlay-y="10px" data-img-scale="0.95" data-img-y="var(--top-same)">
+            <div class="row gap">
+                <img src="/marc/olieblik/3.jpg">
+                <img src="/marc/olieblik/4.jpg">
+            </div>
+        </div>
+        <div class="column s25 gap">
+            <img src="/marc/olieblik/5.jpg">
+            <img src="/marc/olieblik/6.jpg">
+        </div>
+    </main>
+</body>
+
+</html>

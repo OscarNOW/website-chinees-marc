@@ -1,0 +1,36 @@
+@import 'https://fonts.googleapis.com/css2?family=Roboto&display=swap';
+
+@import '/css/text.css';
+@import '/css/fullPage.css';
+@import '/css/layout.css';
+@import '/css/list.css';
+@import '/css/image.css';
+
+.box {
+    border: 1px solid black;
+    border-radius: 5px;
+
+    padding: 2vmax;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    z-index: 2;
+
+    display: flex;
+    justify-content: flex-start;
+    gap: 1vw;
+
+    background-color: rgba(255, 255, 255, 0.304);
+    backdrop-filter: blur(10px);
+    padding: 0.5vmax;
+    border-bottom-right-radius: 10px;
+}
+
+dialog.zoomable-image-dialog::backdrop {
+    background: transparent;
+    cursor: zoom-out;
+}

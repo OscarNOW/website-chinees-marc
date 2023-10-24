@@ -1,0 +1,51 @@
+.option {
+    width: 80vw;
+    height: 20vh;
+
+    display: flex;
+    justify-content: space-between;
+
+    background-color: rgba(255, 255, 255, 0.304);
+    backdrop-filter: blur(10px);
+
+    border-radius: 10px;
+}
+
+a.option {
+    text-decoration: none;
+    color: black;
+}
+
+.option>img {
+    border-radius: 10px;
+}
+
+a.option>img {
+    width: auto;
+    height: auto;
+}
+
+.option>p {
+    align-self: center;
+
+    font-size: 3vmax;
+
+    margin-left: 4vw;
+}
+
+.center {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+}
+
+main {
+    width: fit-content !important;
+}
+
+body {
+    overflow: hidden;
+}
