@@ -207,10 +207,14 @@ async function handleImageClick(image, index, preventHistory, preventOpenAnimati
         height: 'auto'
     };
 
+    const imageCloneDocumentPosition = document.createElement('span');
+    imageCloneDocumentPosition.style.width = `${oldImagePosition.width}px`;
+    imageCloneDocumentPosition.style.height = `${oldImagePosition.height}px`;
+    insertAfter(imageCloneDocumentPosition, image);
+
     const imageClone = image.cloneNode();
-    const imageClonePosition = document.createElement('span');
-    insertAfter(imageClonePosition, image);
-    image.parentNode.removeChild(image);
+
+    image.remove();
     dialog.appendChild(image);
 
     image.className = '';
@@ -299,8 +303,8 @@ async function handleImageClick(image, index, preventHistory, preventOpenAnimati
     closeButton.style.opacity = null;
 
     imageClone.style.opacity = '0';
-    insertAfter(imageClone, imageClonePosition);
-    imageClonePosition.remove();
+    insertAfter(imageClone, imageCloneDocumentPosition);
+    imageCloneDocumentPosition.remove();
 
     await wait(500);
 
